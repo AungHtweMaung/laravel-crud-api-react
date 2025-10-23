@@ -21,3 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/blogs', 'App\Http\Controllers\Api\BlogController@index');
 Route::post('/blogs', 'App\Http\Controllers\Api\BlogController@store');
+Route::get('/blogs/{id}', 'App\Http\Controllers\Api\BlogController@show');
+Route::put('/blogs/{blog}', 'App\Http\Controllers\Api\BlogController@update');
+Route::delete('/blogs/{blog}', 'App\Http\Controllers\Api\BlogController@destroy');

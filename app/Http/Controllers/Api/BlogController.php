@@ -11,9 +11,10 @@ class BlogController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $blogs = Blog::latest()->get();
+        $search = $request->query('search');
+        $blogs = Blog::filter($search)->latest()->get();
         return response()->json([
             'success' => true,
             'data' => $blogs
@@ -30,7 +31,7 @@ class BlogController extends Controller
             'description' => 'required|string',
         ]);
 
-        
+
 
         $blog = Blog::create($request->all());
 
@@ -45,22 +46,41 @@ class BlogController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $blog = Blog::findOrFail($id);
+        return response()->json([
+            'success' => true,
+            'data' => $blog
+        ], 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Blog $blog)
     {
-        //
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
+
+        $blog->update($request->all());
+
+        $blog->refresh();
+
+        return response()->json([
+            'success' => true,
+            'data' => $blog
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Blog $blog)
     {
-        //
+        $blog->delete();
+        return response()->json([
+            'success' => true,
+        ], 200);
     }
 }
